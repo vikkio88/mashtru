@@ -1,0 +1,6 @@
+/.idea
+coverage/
+clover.xml
+vendor/
+composer.lock
+

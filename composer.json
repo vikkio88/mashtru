@@ -1,0 +1,27 @@
+{
+    "name": "vikkio88/mashtru",
+    "description": "A framework-agnostic php library usefull to manage scheduled tasks on shared webhosting or not",
+    "keywords": ["scheduled-task","php-scheduler","job", "cronjob-php", "vikkio88"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vincenzo Ciaccio",
+            "email": "vincenzo.ciaccio@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "morris/lessql": "~0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mashtru\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "": "tests/",
+            "Tests\\Helpers\\": "tests/Helpers"
+        }
+    }
+}
