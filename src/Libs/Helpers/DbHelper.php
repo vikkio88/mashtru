@@ -34,4 +34,34 @@ class DbHelper
     {
         return $this->db->table($tableName);
     }
+
+    public function insert($table, $data)
+    {
+        $data = array_merge(
+            $data,
+            ['created_at' => (new DateTime())->format('Y-m-d H:i:s')]
+        );
+
+        $row = $this->db->createRow(
+            $table,
+            $data
+        );
+
+        $this->db->begin();
+        $row->save();
+        return $this->db->commit();
+
+    }
+
+    public function update($table, $rowName, $value, $data)
+    {
+
+    }
+
+    public function delete($table, $rowName, $value)
+    {
+        return $this->db->table($table)
+            ->where($rowName, $value)
+            ->delete();
+    }
 }
