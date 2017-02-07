@@ -68,7 +68,9 @@ abstract class Model
 
     public function update($id, $data)
     {
-
+        return $this->table()
+            ->where('id', $id)
+            ->update($data);
     }
 
     public function delete($id)
