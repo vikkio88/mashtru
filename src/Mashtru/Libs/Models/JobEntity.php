@@ -4,7 +4,7 @@
 namespace Mashtru\Libs\Models;
 
 
-use DateTime;
+use Carbon\Carbon;
 
 class JobEntity extends Model
 {
@@ -12,7 +12,7 @@ class JobEntity extends Model
 
     private function now()
     {
-        return new DateTime();
+        return Carbon::now();
     }
 
     private function nowF()
@@ -41,7 +41,7 @@ class JobEntity extends Model
 
     public function updateFireTime($job)
     {
-        $nextFireTime = $this->now()->add($job->delta_minutes):
+        $nextFireTime = $this->now()->addMinutes($job->delta_minutes);
         return $this->update(
             $job->id,
             ['fire_time' => $nextFireTime]
