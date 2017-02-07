@@ -1,14 +1,15 @@
 <?php
 
 
-namespace Libs\Interfaces;
+namespace Mashtru\Libs\Interfaces;
 
 
 use Mashtru\Libs\Helpers\DBConfig;
+use Mashtru\Libs\Helpers\RunnerConfig;
 
 interface MashtruManager
 {
-    public function __construct(DBConfig $config);
+    public function __construct(DBConfig $dbConfig, RunnerConfig $runnerConfig);
 
     public function getAllJobs();
 

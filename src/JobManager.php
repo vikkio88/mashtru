@@ -4,27 +4,30 @@
 namespace Mashtru;
 
 
-use DateTime;
-use Libs\Interfaces\MashtruManager;
+use Mashtru\Libs\Helpers\RunnerConfig;
+use Mashtru\Libs\Interfaces\MashtruManager;
 use Mashtru\Libs\Helpers\DBConfig;
 use Mashtru\Libs\Interfaces\Job;
 use Mashtru\Libs\Models\JobEntity;
+use Mashtru\Libs\Models\JobRunner;
 
 class JobManager implements MashtruManager, Job
 {
     const TABLE_NAME = 'mashtru_jobs';
     protected $jobDb;
+    protected $jobRunner;
 
-    public function __construct(DBConfig $config)
+    public function __construct(DBConfig $dbConfig, RunnerConfig $runnerConfig)
     {
-        $this->jobDb = new JobEntity($config->toArray(), self::TABLE_NAME);
+        $this->jobDb = new JobEntity($dbConfig->toArray(), self::TABLE_NAME);
+        $this->jobRunner = new JobRunner($runnerConfig->toArray());
     }
 
-    public function fire()
+    public function fire(array $parameters = [])
     {
         $jobs = $this->getNextJobs();
         foreach ($jobs as $job) {
-            if ($this->jobRunner->fire($job)
+            if ($this->jobRunner->run($job)
             ) {
                 $this->jobDb->updateFireTime($job);
             }
