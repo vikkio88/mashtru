@@ -5,52 +5,41 @@ namespace Mashtru;
 
 
 use DateTime;
-use Libs\Helpers\DbHelper;
 use Libs\Interfaces\MashtruManager;
 use Mashtru\Libs\Helpers\DBConfig;
 use Mashtru\Libs\Interfaces\Job;
+use Mashtru\Libs\Models\JobEntity;
 
 class JobManager implements MashtruManager
 {
     const TABLE_NAME = 'mashtru_jobs';
-    const TIME_FORMAT = 'Y-m-d H:i:s';
-    protected $db;
+    protected $jobDb;
 
     public function __construct(DBConfig $config)
     {
-        $this->db = new DbHelper($config->toArray());
-    }
-
-    private function table()
-    {
-        return $this->db->table(self::TABLE_NAME);
+        $this->jobDb = new JobEntity($config->toArray(), self::TABLE_NAME);
     }
 
     public function getAllJobs()
     {
-        return $this->table()->fetchAll();
+        return $this->jobDb->getAll();
     }
 
     public function getJob($name)
     {
-        return $this->table()
-            ->where('name', $name)
-            ->fetch();
+        return $this->jobDb->getByName($name);
     }
 
-    public function getNextJobsToFire()
+    public function getNextJobs()
     {
-        $now = new DateTime();
-        return $this->table()
-            ->where('fire_time <=', $now->format(self::TIME_FORMAT))
-            ->where('active', true)
-            ->fetchAll();
+        return $this->jobDb->getNext();
+
     }
 
     public function addJob(Job $job)
     {
-        $this->db->insert(
-            self::TABLE_NAME, $job->toArray()
+        $this->jobDb->create(
+            $job->toArray()
         );
     }
 
@@ -66,7 +55,7 @@ class JobManager implements MashtruManager
 
     public function removeJob($name)
     {
-        // TODO: Implement removeJob() method.
+        $this->jobDb->deleteByName($name);
     }
 
     public function updateFireTime(DateTime $newFireTime)
