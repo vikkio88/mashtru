@@ -10,14 +10,22 @@ class JobEntity extends Model
 {
     const TIME_FORMAT = 'Y-m-d H:i:s';
 
+    private function now()
+    {
+        return new DateTime();
+    }
+
+    private function nowF()
+    {
+        return $this->now()->format(self::TIME_FORMAT);
+    }
 
     public function getNext()
     {
-        $now = new DateTime();
         $this->table()->where('active', true)
             ->where(
                 'fire_time <=',
-                $now->format(self::TIME_FORMAT)
+                $this->nowF()
             )->fetchAll();
     }
 
@@ -29,5 +37,14 @@ class JobEntity extends Model
     public function deleteByName($name)
     {
         return $this->table()->where('name', $name)->delete();
+    }
+
+    public function updateFireTime($job)
+    {
+        $nextFireTime = $this->now()->add($job->delta_minutes):
+        return $this->update(
+            $job->id,
+            ['fire_time' => $nextFireTime]
+        );
     }
 }
