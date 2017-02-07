@@ -10,7 +10,7 @@ use Mashtru\Libs\Helpers\DBConfig;
 use Mashtru\Libs\Interfaces\Job;
 use Mashtru\Libs\Models\JobEntity;
 
-class JobManager implements MashtruManager
+class JobManager implements MashtruManager, Job
 {
     const TABLE_NAME = 'mashtru_jobs';
     protected $jobDb;
@@ -18,6 +18,17 @@ class JobManager implements MashtruManager
     public function __construct(DBConfig $config)
     {
         $this->jobDb = new JobEntity($config->toArray(), self::TABLE_NAME);
+    }
+
+    public function fire()
+    {
+        $jobs = $this->getNextJobs();
+        foreach ($jobs as $job) {
+            if ($this->jobRunner->fire($job)
+            ) {
+                $this->jobDb->updateFireTime($job);
+            }
+        }
     }
 
     public function getAllJobs()
@@ -36,14 +47,14 @@ class JobManager implements MashtruManager
 
     }
 
-    public function addJob(Job $job)
+    public function addJob($data = [])
     {
         $this->jobDb->create(
-            $job->toArray()
+            $data
         );
     }
 
-    public function updateJob(Job $job)
+    public function updateJob($data = [])
     {
         // TODO: Implement updateJob() method.
     }
@@ -58,8 +69,10 @@ class JobManager implements MashtruManager
         $this->jobDb->deleteByName($name);
     }
 
-    public function updateFireTime(DateTime $newFireTime)
+    public function getName()
     {
-        // TODO: Implement updateFireTime() method.
+        return [
+            'name' => self::class
+        ];
     }
 }

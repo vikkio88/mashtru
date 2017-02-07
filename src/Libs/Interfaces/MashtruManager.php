@@ -4,9 +4,7 @@
 namespace Libs\Interfaces;
 
 
-use DateTime;
 use Mashtru\Libs\Helpers\DBConfig;
-use Mashtru\Libs\Interfaces\Job;
 
 interface MashtruManager
 {
@@ -18,13 +16,12 @@ interface MashtruManager
 
     public function getNextJobs();
 
-    public function addJob(Job $job);
+    public function addJob($data = []);
 
-    public function updateJob(Job $job);
+    public function updateJob($data = []);
 
     public function toggleJob($name);
 
     public function removeJob($name);
 
-    public function updateFireTime(DateTime $newFireTime);
 }
