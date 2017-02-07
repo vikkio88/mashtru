@@ -16,7 +16,7 @@ interface MashtruManager
 
     public function getJob($name);
 
-    public function getNextJobsToFire();
+    public function getNextJobs();
 
     public function addJob(Job $job);
 
