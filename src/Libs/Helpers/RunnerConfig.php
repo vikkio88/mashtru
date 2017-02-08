@@ -6,17 +6,17 @@ namespace Mashtru\Libs\Helpers;
 
 class RunnerConfig
 {
-    private $name;
+    private $namespaces;
 
-    function __construct($name)
+    function __construct($namespaces = [])
     {
-        $this->name = $name;
+        $this->namespaces = $namespaces;
     }
 
     public function toArray()
     {
         return [
-            'name' => $this->name
+            'namespaces' => $this->namespaces
         ];
     }
 
