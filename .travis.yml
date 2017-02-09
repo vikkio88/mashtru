@@ -1,0 +1,7 @@
+install:
+  - composer install --prefer-dist --no-interaction
+
+language: php
+
+notifications:
+  email: false
