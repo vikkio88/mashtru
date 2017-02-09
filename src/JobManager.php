@@ -8,8 +8,8 @@ use Mashtru\Libs\Helpers\RunnerConfig;
 use Mashtru\Libs\Interfaces\MashtruManager;
 use Mashtru\Libs\Helpers\DBConfig;
 use Mashtru\Libs\Interfaces\Job;
-use Mashtru\Libs\Models\JobEntity;
-use Mashtru\Libs\Models\JobRunner;
+use Mashtru\Models\JobEntity;
+use Mashtru\Models\JobRunner;
 
 class JobManager implements MashtruManager, Job
 {
