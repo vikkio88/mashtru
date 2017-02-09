@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Mashtru\Libs\Models;
+namespace Mashtru\Models;
 
 use Exception;
 
