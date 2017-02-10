@@ -15,7 +15,7 @@ class JobRunnerTest extends \PHPUnit_Framework_TestCase
      * @test
      * @group JobRunner
      */
-    public function itRunsAJobAutloaded()
+    public function itRunsAJobAutoLoaded()
     {
         $jobRunner = new JobRunner(
             (new RunnerConfig(['Tests\Helpers\\']))->toArray()

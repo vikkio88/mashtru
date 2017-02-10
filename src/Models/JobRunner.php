@@ -16,7 +16,7 @@ class JobRunner
     function __construct($config = [])
     {
         $this->jobNamespaces = $config['namespaces'];
-        $this->enableLogs = $config['enableLogs'];
+        $this->enableLogs = $config['enableLog'];
 
         if ($this->enableLogs) {
             $this->logger = new Logger('JobRunner');
