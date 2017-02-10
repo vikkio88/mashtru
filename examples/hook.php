@@ -1,4 +1,5 @@
 <?php
+require '../vendor/autoload.php';
 
 use Mashtru\JobManager;
 use Mashtru\Libs\Helpers\DBConfig;
