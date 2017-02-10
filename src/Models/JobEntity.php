@@ -20,6 +20,14 @@ class JobEntity extends Model
         return $this->now()->format(self::TIME_FORMAT);
     }
 
+    public function create($data)
+    {
+        $data['fire_time'] = $this->now()
+            ->addMinutes($data['delta_minutes'])
+            ->format(self::TIME_FORMAT);
+        return parent::create($data);
+    }
+
     public function getNext()
     {
         $this->table()->where('active', true)
@@ -44,7 +52,7 @@ class JobEntity extends Model
         $nextFireTime = $this->now()->addMinutes($job->delta_minutes);
         return $this->update(
             $job->id,
-            ['fire_time' => $nextFireTime]
+            ['fire_time' => $nextFireTime->format(self::TIME_FORMAT)]
         );
     }
 
