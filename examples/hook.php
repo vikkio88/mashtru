@@ -14,8 +14,7 @@ $jobs = new JobManager(
     ),
     new RunnerConfig(
         [
-            '\\',
-            'App\Namespace\\'
+            'App\Scripts\\'
         ]
     )
 );
