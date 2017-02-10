@@ -8,10 +8,12 @@ use Exception;
 class JobRunner
 {
     protected $jobNamespaces = [];
+    protected $log;
 
     function __construct($config = [])
     {
         $this->jobNamespaces = $config['namespaces'];
+        $this->log = $config['log'];
     }
 
     public function run($job)
@@ -20,7 +22,7 @@ class JobRunner
             $jobCommand = $this->createJob($job->class_name, $job->args);
             return $jobCommand->fire();
         } catch (Exception $exception) {
-            $this->reportError($exception->getMessage());
+            $this->reportError($job->class_name, $exception->getMessage());
         }
     }
 
@@ -46,8 +48,12 @@ class JobRunner
         return new $jobClass($args);
     }
 
-    private function reportError($errorMessage)
+    private function reportError($className, $errorMessage)
     {
-        echo $errorMessage;
+        if (!$this->log) {
+            return;
+        }
+
+        //Perform log
     }
 }
