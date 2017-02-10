@@ -17,7 +17,7 @@ class JobRunner
     public function run($job)
     {
         try {
-            $jobCommand = $this->createJob($job->className, $job->args);
+            $jobCommand = $this->createJob($job->class_name, $job->args);
             return $jobCommand->fire();
         } catch (Exception $exception) {
             $this->reportError($exception->getMessage());
