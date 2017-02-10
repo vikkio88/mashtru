@@ -7,22 +7,22 @@ namespace Mashtru\Libs\Helpers;
 class RunnerConfig
 {
     private $namespaces;
-    /**
-     * @var bool
-     */
-    private $log;
+    protected $enableLog;
+    protected $logFile;
 
-    function __construct($namespaces = [], $log = false)
+    function __construct($namespaces = [], $enableLog = false, $logFile = 'mashtru.log')
     {
         $this->namespaces = $namespaces;
-        $this->log = $log;
+        $this->enableLog = $enableLog;
+        $this->logFile = $logFile;
     }
 
     public function toArray()
     {
         return [
             'namespaces' => $this->namespaces,
-            'log' => $this->log
+            'enableLog' => $this->enableLog,
+            'logFile' => $this->logFile
         ];
     }
 

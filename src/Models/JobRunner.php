@@ -4,26 +4,41 @@
 namespace Mashtru\Models;
 
 use Exception;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class JobRunner
 {
     protected $jobNamespaces = [];
-    protected $log;
+    protected $enableLogs;
+    protected $logger;
 
     function __construct($config = [])
     {
         $this->jobNamespaces = $config['namespaces'];
-        $this->log = $config['log'];
+        $this->enableLogs = $config['enableLogs'];
+
+        if ($this->enableLogs) {
+            $this->logger = new Logger('JobRunner');
+            $this->logger->pushHandler(
+                new StreamHandler(
+                    $config['logFile'],
+                    Logger::INFO
+                )
+            );
+        }
     }
 
     public function run($job)
     {
+        $this->logInfo('running ' . $job->name);
         try {
             $jobCommand = $this->createJob($job->class_name, $job->args);
             return $jobCommand->fire();
         } catch (Exception $exception) {
             $this->reportError($job->class_name, $exception->getMessage());
         }
+        $this->logInfo('finished ' . $job->name);
     }
 
     private function getJobClass($jobClassName)
@@ -50,10 +65,19 @@ class JobRunner
 
     private function reportError($className, $errorMessage)
     {
-        if (!$this->log) {
+        if (!$this->enableLogs) {
             return;
         }
 
-        //Perform log
+        $this->logger->error($className, [$errorMessage]);
+    }
+
+    private function logInfo($message)
+    {
+        if (!$this->enableLogs) {
+            return;
+        }
+
+        $this->logger->info($message);
     }
 }

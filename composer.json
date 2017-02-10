@@ -12,7 +12,8 @@
     "minimum-stability": "dev",
     "require": {
         "morris/lessql": "~0.3",
-        "nesbot/carbon": "^1.22"
+        "nesbot/carbon": "^1.22",
+        "monolog/monolog": "^1.22"
     },
     "autoload": {
         "psr-4": {
