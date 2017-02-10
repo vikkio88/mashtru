@@ -1,12 +1,15 @@
 <?php
 
 
+use Carbon\Carbon;
 use Mashtru\JobManager;
 use Mashtru\Libs\Helpers\DBConfig;
 use Mashtru\Models\JobEntity;
 
 class JobEntityTest extends PHPUnit_Framework_TestCase
 {
+
+    const TIME_FORMAT = 'Y-m-d H:i:s';
     /**
      * @var JobEntity
      */
@@ -32,14 +35,19 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
      * @test
      * @group JobEntity
      */
-    public function itCreatesANewJob()
+    public function itCreatesANewJobAndAppliesFireTime()
     {
         $testName = 'testJob';
+        $data = $this->getDummyData($testName);
+        $diff = $data['delta_minutes'] = 5;
+        $now = Carbon::now();
         $this->jobEntity->create(
-            $this->getDummyData($testName)
+            $data
         );
+        $savedJob = $this->jobEntity->getByName($testName);
+        $this->assertNotEmpty($savedJob);
+        $this->assertEquals($now->addMinutes($diff)->format(self::TIME_FORMAT), $savedJob->fire_time);
 
-        $this->assertNotEmpty($this->jobEntity->getByName($testName));
     }
 
 
@@ -84,11 +92,9 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
                 $this->getDummyData($testAll . $i)
             );
         }
-
         $result = $this->jobEntity->getAll();
         $this->assertNotEmpty($result);
         $this->assertCount($elements + 1, $result);
-
     }
 
     private function getDummyData($testName)
