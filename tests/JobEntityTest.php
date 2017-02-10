@@ -97,6 +97,32 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
         $this->assertCount($elements + 1, $result);
     }
 
+    /**
+     * @test
+     * @group JobEntity
+     * @group updatefiretime
+     */
+    public function itUpdatesTheFireTime()
+    {
+        $testFire = 'testFire';
+        $data = $this->getDummyData($testFire);
+        $diff = $data['delta_minutes'] + 5;
+        $this->jobEntity->create(
+            $data
+        );
+        $insertedJob = $this->jobEntity->getByName($testFire);
+        $firstFireTime = $insertedJob->fire_time;
+        $now = Carbon::now();
+        $insertedJob->delta_minutes = $diff;
+        $this->jobEntity->updateFireTime($insertedJob);
+        $updatedJob = $this->jobEntity->getByName($testFire);
+        $secondFireTime = $updatedJob->fire_time;
+
+        $this->assertNotEquals($firstFireTime, $secondFireTime);
+        $this->assertEquals($now->addMinutes($diff)->format(self::TIME_FORMAT), $secondFireTime);
+
+    }
+
     private function getDummyData($testName)
     {
         return [
