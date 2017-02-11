@@ -4,6 +4,7 @@
 namespace Mashtru;
 
 
+use Mashtru\Libs\Factories\JobEntityFactory;
 use Mashtru\Libs\Helpers\RunnerConfig;
 use Mashtru\Libs\Interfaces\MashtruManager;
 use Mashtru\Libs\Helpers\DBConfig;
@@ -14,12 +15,15 @@ use Mashtru\Models\JobRunner;
 class JobManager implements MashtruManager, Job
 {
     const TABLE_NAME = 'mashtru_jobs';
+    /**
+     * @var JobEntity
+     */
     protected $jobDb;
     protected $jobRunner;
 
     public function __construct(DBConfig $dbConfig, RunnerConfig $runnerConfig)
     {
-        $this->jobDb = new JobEntity($dbConfig->toArray(), self::TABLE_NAME);
+        $this->jobDb = JobEntityFactory::getInstance($dbConfig, self::TABLE_NAME);
         $this->jobRunner = new JobRunner($runnerConfig->toArray());
     }
 
@@ -57,14 +61,15 @@ class JobManager implements MashtruManager, Job
         );
     }
 
-    public function updateJob($data = [])
+    public function updateJob($name, $data = [])
     {
-        // TODO: Implement updateJob() method.
+        return $this->jobDb->updateByName($name, $data);
+
     }
 
     public function toggleJob($name)
     {
-        // TODO: Implement toggleJob() method.
+
     }
 
     public function removeJob($name)
@@ -74,8 +79,6 @@ class JobManager implements MashtruManager, Job
 
     public function getName()
     {
-        return [
-            'name' => self::class
-        ];
+        return self::class;
     }
 }
