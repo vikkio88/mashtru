@@ -49,6 +49,13 @@ class JobEntity extends Model
         return $this->table()->where('name', $name)->delete();
     }
 
+    public function updateByName($name, $data)
+    {
+        return $this->table()
+            ->where('name', $name)
+            ->update($data);
+    }
+
     public function updateFireTime($job)
     {
         $nextFireTime = $this->calculateFireTime($job);
