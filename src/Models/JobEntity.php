@@ -24,19 +24,23 @@ class JobEntity extends Model
 
     public function create($data)
     {
-        $data['fire_time'] = $this->now()
-            ->addMinutes($data['delta_minutes'])
-            ->format(self::TIME_FORMAT);
+        if (!isset($data['fire_time'])) {
+            $data['fire_time'] = $this->now()
+                ->addMinutes($data['delta_minutes'])
+                ->format(self::TIME_FORMAT);
+        }
         return parent::create($data);
     }
 
     public function getNext()
     {
-        $this->table()->where('active', true)
+        return $this->table()
+            ->where('active', true)
             ->where(
-                'fire_time <=',
+                'fire_time <= ?',
                 $this->nowF()
-            )->fetchAll();
+            )->orderBy('priority', 'DESC')
+            ->fetchAll();
     }
 
     public function getByName($name)
