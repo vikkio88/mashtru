@@ -119,6 +119,50 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
      * @test
      * @group JobEntity
      */
+    public function itUpdatesByName()
+    {
+        $testUpdate = 'testUpdate';
+        $data = $this->getDummyData($testUpdate);
+        $this->jobEntity->create(
+            $data
+        );
+        $updatedName = $testUpdate . '1';
+        $updatedClassName = 'NewClass';
+        $this->jobEntity->updateByName(
+            $testUpdate,
+            [
+                'name' => $updatedName,
+                'class_name' => $updatedClassName
+            ]
+        );
+        $this->assertEquals($updatedName, $this->jobEntity->getByName($updatedName)->name);
+        $this->assertEquals($updatedClassName, $this->jobEntity->getByName($updatedName)->class_name);
+    }
+
+    /**
+     * @test
+     * @group JobEntity
+     */
+    public function itTogglesJob()
+    {
+        $testToggle = 'testToggle';
+        $data = $this->getDummyData($testToggle);
+        $this->jobEntity->create(
+            $data
+        );
+        $starting = $this->jobEntity->getByName($testToggle)->active;
+        $this->jobEntity->toggle($testToggle);
+        $new = $this->jobEntity->getByName($testToggle)->active;
+        $this->assertNotEquals($starting, $new);
+        $this->jobEntity->toggle($testToggle);
+        $new = $this->jobEntity->getByName($testToggle)->active;
+        $this->assertEquals($starting, $new);
+    }
+
+    /**
+     * @test
+     * @group JobEntity
+     */
     public function itUpdatesTheFireTime()
     {
         $testFire = 'testFire';

@@ -65,6 +65,17 @@ class JobEntity extends Model
         );
     }
 
+    public function toggle($name)
+    {
+        $currentActive = (bool)$this->getByName($name)->active;
+        $this->updateByName(
+            $name,
+            [
+                'active' => !$currentActive
+            ]
+        );
+    }
+
     public function uninstall()
     {
         $this->pdo->query('DROP TABLE IF EXISTS ' . $this->tableName);
