@@ -100,6 +100,33 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @group JobEntity
+     * @group cose
+     */
+    public function itGetsJobsReadyToFireAndWithRightPriority()
+    {
+        $testNext = 'testNext';
+        $elements = 5;
+        foreach (range(0, $elements) as $i) {
+            $data = $this->getDummyData($testNext . $i);
+            $data['priority'] = $i;
+            $data['fire_time'] = Carbon::now()->addMinutes(-2)->format(JobEntity::TIME_FORMAT);
+            $this->jobEntity->create(
+                $data
+            );
+        }
+        $result = $this->jobEntity->getNext();
+        $this->assertNotEmpty($result);
+        $this->assertCount($elements + 1, $result);
+        $previousPriority = $elements;
+        foreach ($result as $job) {
+            $this->assertLessThanOrEqual($previousPriority, $job->priority);
+            $previousPriority = $job->priority;
+        }
+    }
+
+    /**
+     * @test
+     * @group JobEntity
      */
     public function itReturnsFileIfTryToInsertDuplicateJobName()
     {
@@ -182,7 +209,6 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($now->addMinutes($diff)->format(self::TIME_FORMAT), $secondFireTime);
 
     }
-
 
     private function getDummyData($testName)
     {
