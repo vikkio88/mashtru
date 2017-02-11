@@ -19,7 +19,7 @@ interface MashtruManager
 
     public function addJob($data = []);
 
-    public function updateJob($data = []);
+    public function updateJob($name, $data = []);
 
     public function toggleJob($name);
 
