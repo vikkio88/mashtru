@@ -5,10 +5,12 @@ namespace Mashtru\Models;
 
 
 use Carbon\Carbon;
+use Exception;
 
 class JobEntity extends Model
 {
     const TIME_FORMAT = 'Y-m-d H:i:s';
+    protected $alreadyInstalled = null;
 
     private function now()
     {
@@ -49,7 +51,7 @@ class JobEntity extends Model
 
     public function updateFireTime($job)
     {
-        $nextFireTime = $this->now()->addMinutes($job->delta_minutes);
+        $nextFireTime = $this->calculateFireTime($job);
         return $this->update(
             $job->id,
             ['fire_time' => $nextFireTime->format(self::TIME_FORMAT)]
@@ -76,7 +78,8 @@ class JobEntity extends Model
                 updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
                 created_at TIMESTAMP NOT NULL,
                 PRIMARY KEY(id),
-                INDEX `name` (`name`)
+                UNIQUE KEY (`name`),
+                INDEX `name_idx` (`name`)
             );
             '
             );
@@ -85,11 +88,20 @@ class JobEntity extends Model
 
     private function alreadyInstalled()
     {
-        try {
-            $this->getOne(1);
-        } catch (\Exception $e) {
-            return false;
+        if ($this->alreadyInstalled == null) {
+            $this->alreadyInstalled = true;
+            try {
+                $this->getOne(1);
+            } catch (Exception $e) {
+                $this->alreadyInstalled = false;
+            }
         }
-        return true;
+
+        return $this->alreadyInstalled;
+    }
+
+    private function calculateFireTime($job)
+    {
+        return $this->now()->addMinutes($job->delta_minutes);
     }
 }
