@@ -91,6 +91,7 @@ class JobEntity extends Model
                 class_name VARCHAR(255) DEFAULT NULL ,
                 args TEXT DEFAULT NULL ,
                 delta_minutes INT DEFAULT NULL,
+                priority TINYINT DEFAULT 0,
                 active BOOL DEFAULT 1,
                 fire_time TIMESTAMP NULL DEFAULT NULL,
                 updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
