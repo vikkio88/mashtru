@@ -3,6 +3,7 @@
 
 use Carbon\Carbon;
 use Mashtru\JobManager;
+use Mashtru\Libs\Factories\JobEntityFactory;
 use Mashtru\Libs\Helpers\DBConfig;
 use Mashtru\Models\JobEntity;
 
@@ -17,16 +18,15 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->jobEntity = new JobEntity(
-            (new DBConfig(
+        $this->jobEntity = JobEntityFactory::getInstance(
+            new DBConfig(
                 'localhost',
                 'mashtru',
                 'root',
                 'root'
-            ))->toArray(),
+            ),
             JobManager::TABLE_NAME
         );
-
         $this->jobEntity->uninstall();
         $this->jobEntity->install();
     }
@@ -100,7 +100,25 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @group JobEntity
-     * @group updatefiretime
+     */
+    public function itReturnsFileIfTryToInsertDuplicateJobName()
+    {
+        $testDuplicate = 'testDuplicate';
+        $data = $this->getDummyData($testDuplicate);
+        $result = $this->jobEntity->create(
+            $data
+        );
+        $this->assertNotFalse($result);
+        $result = $this->jobEntity->create(
+            $data
+        );
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     * @group JobEntity
+     * @group dio
      */
     public function itUpdatesTheFireTime()
     {
@@ -117,11 +135,11 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
         $this->jobEntity->updateFireTime($insertedJob);
         $updatedJob = $this->jobEntity->getByName($testFire);
         $secondFireTime = $updatedJob->fire_time;
-
         $this->assertNotEquals($firstFireTime, $secondFireTime);
         $this->assertEquals($now->addMinutes($diff)->format(self::TIME_FORMAT), $secondFireTime);
 
     }
+
 
     private function getDummyData($testName)
     {
