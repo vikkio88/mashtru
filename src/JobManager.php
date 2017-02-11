@@ -56,7 +56,7 @@ class JobManager implements MashtruManager, Job
 
     public function addJob($data = [])
     {
-        $this->jobDb->create(
+        return $this->jobDb->create(
             $data
         );
     }
@@ -69,7 +69,7 @@ class JobManager implements MashtruManager, Job
 
     public function toggleJob($name)
     {
-
+        $this->jobDb->toggle($name);
     }
 
     public function removeJob($name)
