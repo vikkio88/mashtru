@@ -7,9 +7,11 @@ namespace Mashtru\Models;
 use DateTime;
 use LessQL\Database;
 use PDO;
+use PDOException;
 
 abstract class Model
 {
+    const DUPLICATE_ERROR_CODE = 1062;
     protected $tableName;
     protected $db;
     protected $pdo;
@@ -59,11 +61,17 @@ abstract class Model
             $this->tableName,
             $data
         );
-
-        $this->db->begin();
-        $row->save();
-        return $this->db->commit();
-
+        try {
+            $this->db->begin();
+            $row->save();
+            return $this->db->commit();
+        } catch (PDOException $e) {
+            $this->db->rollback();
+            if ($e->errorInfo[1] == Model::DUPLICATE_ERROR_CODE) {
+                return false;
+            }
+            throw $e;
+        }
     }
 
     public function update($id, $data)
