@@ -90,6 +90,7 @@ CREATE TABLE mashtru_jobs(
 **args** | a text field that will be passed into the fire function (I would cast it with ```json_decode``` as config param)
 **class_name** | the name of the class which ```fire()``` method will be called
 **delta_minutes** | the difference on minutes of the iteration for this job (it will be executed every *delta_minutes* minutes)
+**priority** | a *TINYINT* value which jobs will be order by with ```DESC``` direction (0 by default) (from *-128* to *127*)
 **active** | whether or not the job is active
 **fire_time** | calculated column that will tell mashtru whether the job is ready to be fired or not
 
