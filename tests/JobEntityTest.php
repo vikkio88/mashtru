@@ -118,7 +118,6 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @group JobEntity
-     * @group dio
      */
     public function itUpdatesTheFireTime()
     {
