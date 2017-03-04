@@ -125,6 +125,7 @@ class JobEntity extends Model
 
     private function calculateFireTime($job)
     {
-        return $this->now()->addMinutes($job->delta_minutes);
+        $oldFireTime = Carbon::createFromFormat(self::TIME_FORMAT, $job->fire_time);
+        return $oldFireTime->addMinutes($job->delta_minutes);
     }
 }
