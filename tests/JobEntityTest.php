@@ -193,14 +193,14 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
     public function itUpdatesTheFireTime()
     {
         $testFire = 'testFire';
-        $data = $this->getDummyData($testFire);
+        $now = Carbon::now();
+        $data = $this->getDummyData($testFire, $now);
         $diff = $data['delta_minutes'] + 5;
         $this->jobEntity->create(
             $data
         );
         $insertedJob = $this->jobEntity->getByName($testFire);
         $firstFireTime = $insertedJob->fire_time;
-        $now = Carbon::now();
         $insertedJob->delta_minutes = $diff;
         $this->jobEntity->updateFireTime($insertedJob);
         $updatedJob = $this->jobEntity->getByName($testFire);
@@ -210,7 +210,7 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
 
     }
 
-    private function getDummyData($testName)
+    private function getDummyData($testName, $fireTime = null)
     {
         return [
             'name' => $testName,
@@ -218,7 +218,7 @@ class JobEntityTest extends PHPUnit_Framework_TestCase
             'args' => null,
             'delta_minutes' => 10,
             'active' => true,
-            'fire_time' => null,
+            'fire_time' => $fireTime,
         ];
     }
 
